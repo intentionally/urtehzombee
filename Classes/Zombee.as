@@ -16,12 +16,30 @@
 		}
 		public function moveZ(xDir:Number, yDir:Number):void
 		{
-			/*if (xDir > 0)
+			if (yDir == 0)
 			{
-				this.rotation = 90;
-			}*/
+				if (xDir < 0)
+				{
+					
+				}
+				else
+				{
+					
+				}
+			}
+			else
+			{
+				if (yDir < 0)
+					gotoAndStop(1);
+				else
+					gotoAndStop(3);
+			}
 			x += xDir * spd;
 			y += yDir * spd;
+		}
+		public function changeDirection():void
+		{
+			var degrees
 		}
 		public function tick():void
 		{

@@ -19,44 +19,42 @@
 			calculateSpawnZone();
 			randomDir();
 			randomSpd();
+			gotoAndStop(1);
+		}
+		public function getDistance(x1:Number, x2:Number, y1:Number, y2:Number):Number
+		{
+			var dx:Number;
+			var dy:Number;
+			
+			dx = x2 - x1;
+			dy = y2 - y1;
+			
+			return Math.sqrt(dx * dx + dy * dy);
+		}
+		public function toRadians(degrees:Number):Number
+		{
+			return degrees * (Math.PI / 180);
 		}
 		public function randomDir():void
 		{
-			xDir = (Math.random() - 2) + 1;
-			yDir = (Math.random() - 2) + 1;
+			var angle:Number = randomRange(0, 360);
+			var radians:Number = toRadians(angle);
 			
-			if (yDir < -1) yDir = -1;
-			if (yDir > 1) yDir = 1;
-			if (xDir < -1) xDir = -1;
-			if (xDir > 1) xDir = 1;
+			xDir = Math.cos(radians);
+			yDir = Math.sin(radians);
 		}
 		public function randomSpd():void
 		{
-			spd = Math.ceil(randomRange(0,2));
+			//spd = Math.ceil(randomRange(1,4));
+			spd = 4;
 		}
 		public function calculateSpawnZone():void
 		{
 			var startX:Number;
 			var startY:Number;
-			/*var zMinX = (game.stage.width / 2) - (game.zombee.width / 2) - (this.width / 2);
-			var zMaxX = (game.stage.width / 2) + (game.zombee.width / 2) + (this.width / 2);
-			var zMinY = (game.stage.height / 2) - (game.zombee.height / 2) - (this.height / 2);
-			var zMaxY = (game.stage.height / 2) + (game.zombee.height / 2) + (this.height / 2);
-			*/
-			startX = 0;
-			startY = 0;
-			/*
-			do
-			{
-				startX = randomRange(this.width / 2, game.stage.width - (this.width / 2));
-			} while ((startX >= zMinX) && (startX <= zMaxX));
-			do
-			{
-				startY = randomRange(this.height / 2, game.stage.height - (this.height / 2));
-			} while ((startY >= zMinY) && (startY <= zMaxY));
-			*/
-			startX = randomRange(0, 400);
-			startY = randomRange(0, 300);
+			
+			startX = randomRange(this.width/2, 800-(this.width/2));
+			startY = randomRange(this.height/2, 600-(this.height/2));
 			
 			this.x = startX;
 			this.y = startY;
@@ -67,20 +65,25 @@
 		}
 		public function runAway():void
 		{
+			if (zombified) spd = 2;
 			x += xDir * spd;
 			y += yDir * spd;
+		}
+		public function bounceOffWall():void
+		{
+			if ((this.x >= game.stage.stageWidth - (this.width/2)) || (this.x <= (this.width/2)))
+				xDir *= -1;
+			if ((this.y >= game.stage.stageHeight - (this.height/2)) || (this.y <= (this.height/2)))
+				yDir *= -1;
 		}
 		public function tick():void
 		{
 			runAway();
+			bounceOffWall();
 			if (this.hitTestObject(game.zombee))
-			{
 				zombified = true;
-			}
 			if (zombified)
-			{
-				spd = 0;
-			}
+				gotoAndStop(2);
 		}
 	}
 }
